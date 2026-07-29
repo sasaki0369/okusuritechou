@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>おくすり手帳帖</title>
+
+<!-- ホーム画面アイコン（HTML内に埋め込み） -->
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTIgMTkyIj48cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgcng9IjQwIiBmaWxsPSIjZDk3NzA2Ii8+PHJlY3QgeD0iNDgiIHk9IjMwIiB3aWR0aD0iOTYiIGhlaWdodD0iMTMyIiByeD0iMTIiIGZpbGw9IiNmZmY4ZWQiLz48cmVjdCB4PSI2NCIgeT0iNTIiIHdpZHRoPSI2NCIgaGVpZ2h0PSI4IiByeD0iNCIgZmlsbD0iI2Q5NzcwNiIvPjxyZWN0IHg9IjY0IiB5PSI3NiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjgiIHJ4PSI0IiBmaWxsPSIjZDk3NzA2Ii8+PHJlY3QgeD0iNjQiIHk9IjEwMCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjgiIHJ4PSI0IiBmaWxsPSIjZDk3NzA2Ii8+PGNpcmNsZSBjeD0iOTYiIGN5PSIxMzYiIHI9IjE4IiBmaWxsPSIjZWE1ODBjIi8+PHJlY3QgeD0iODgiIHk9IjEyOCIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2IiByeD0iMyIgZmlsbD0iI2ZmZjhlZCIvPjwvc3ZnPg==">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTIgMTkyIj48cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgcng9IjQwIiBmaWxsPSIjZDk3NzA2Ii8+PHJlY3QgeD0iNDgiIHk9IjMwIiB3aWR0aD0iOTYiIGhlaWdodD0iMTMyIiByeD0iMTIiIGZpbGw9IiNmZmY4ZWQiLz48cmVjdCB4PSI2NCIgeT0iNTIiIHdpZHRoPSI2NCIgaGVpZ2h0PSI4IiByeD0iNCIgZmlsbD0iI2Q5NzcwNiIvPjxyZWN0IHg9IjY0IiB5PSI3NiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjgiIHJ4PSI0IiBmaWxsPSIjZDk3NzA2Ii8+PHJlY3QgeD0iNjQiIHk9IjEwMCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjgiIHJ4PSI0IiBmaWxsPSIjZDk3NzA2Ii8+PGNpcmNsZSBjeD0iOTYiIGN5PSIxMzYiIHI9IjE4IiBmaWxsPSIjZWE1ODBjIi8+PHJlY3QgeD0iODgiIHk9IjEyOCIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2IiByeD0iMyIgZmlsbD0iI2ZmZjhlZCIvPjwvc3ZnPg==">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="おくすり手帳帖">
+<meta name="theme-color" content="#d97706">
+
+<link rel="manifest" href='data:application/json;base64,eyJuYW1lIjoi44GK44GP44GZ44KK5omL5biz5biWIiwic2hvcnRfbmFtZSI6IuOBiuOBj+OBmeOCiiIsInN0YXJ0X3VybCI6Ii4vaW5kZXguaHRtbCIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiNmZmY4ZWQiLCJ0aGVtZV9jb2xvciI6IiNkOTc3MDYifQ=='>
+
+<style>
+  :root{
+    --paper:#fff8ed;
+    --paper-dark:#faf0dc;
+    --ink:#4a3826;
+    --ink-soft:#8a7a63;
+    --accent:#d97706;
+    --accent-dark:#b45309;
+    --accent-light:#fdba74;
+    --danger:#dc2626;
+    --line:#e8d9bf;
+    --card:#ffffff;
+    --shadow: 0 2px 8px rgba(90,60,20,0.10);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+  html,body{
+    margin:0; padding:0; height:100%;
+    background:var(--paper);
+    font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    color:var(--ink);
+  }
+  body{
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(180,140,80,0.06) 1px, transparent 0);
+    background-size: 18px 18px;
+  }
+  header.topbar{
+    position:sticky; top:0; z-index:20;
+    background:linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+    color:#fff;
+    padding:14px 16px 12px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.15);
+  }
+  header.topbar h1{
+    margin:0; font-size:19px; font-weight:700; letter-spacing:0.5px;
+    display:flex; align-items:center; gap:8px;
+  }
+  header.topbar .sub{font-size:11px; opacity:0.85; margin-top:2px;}
+  .tabbar{
+    display:flex; position:sticky; top:56px; z-index:19;
+    background:var(--paper-dark);
+    border-bottom:1px solid var(--line);
+  }
+  .tabbar button{
+    flex:1; padding:12px 4px; border:none; background:transparent;
+    font-size:14px; font-weight:600; color:var(--ink-soft);
+    border-bottom:3px solid transparent;
+    font-family:inherit;
+  }
+  .tabbar button.active{
+    color:var(--accent-dark);
+    border-bottom:3px solid var(--accent);
+    background:var(--paper);
+  }
+  main{padding:14px 14px 90px;}
+  .card{
+    background:var(--card);
+    border-radius:14px;
+    box-shadow:var(--shadow);
+    padding:16px;
+    margin-bottom:14px;
+    border:1px solid var(--line);
+  }
+  .card h2{
+    margin:0 0 12px; font-size:15px; color:var(--accent-dark);
+    display:flex; align-items:center; gap:6px;
+  }
+  label{
+    display:block; font-size:12px; color:var(--ink-soft); margin:10px 0 4px;
+    font-weight:600;
+  }
+  input[type=text], input[type=date], input[type=number], textarea, select{
+    width:100%; padding:9px 10px; border:1px solid var(--line); border-radius:9px;
+    font-size:15px; background:#fffefb; color:var(--ink);
+    font-family:inherit;
+  }
+  input:focus, textarea:focus, select:focus{outline:2px solid var(--accent-light); border-color:var(--accent);}
+  textarea{resize:vertical; min-height:44px;}
+
+  .med-block{
+    border:1.5px dashed var(--accent-light);
+    border-radius:12px;
+    padding:12px;
+    margin-top:12px;
+    background:#fffdf6;
+    position:relative;
+  }
+  .med-block .med-num{
+    position:absolute; top:-10px; left:10px;
+    background:var(--accent); color:#fff; font-size:11px; font-weight:700;
+    padding:2px 10px; border-radius:10px;
+  }
+  .med-grid{display:grid; grid-template-columns:1fr 1fr; gap:0 10px;}
+  .remove-med{
+    display:block; margin:10px auto 0; background:none; border:none;
+    color:var(--danger); font-size:12px; font-weight:600; padding:4px;
+  }
+  .add-med-btn{
+    width:100%; margin-top:14px; padding:11px; border-radius:10px;
+    border:1.5px dashed var(--accent); background:#fffaf0; color:var(--accent-dark);
+    font-size:14px; font-weight:700; font-family:inherit;
+  }
+  .save-btn{
+    width:100%; margin-top:16px; padding:13px; border-radius:12px;
+    border:none; background:linear-gradient(135deg, var(--accent), var(--accent-dark));
+    color:#fff; font-size:15px; font-weight:700; box-shadow:0 3px 10px rgba(217,119,6,0.35);
+    font-family:inherit;
+  }
+  .save-btn:active{transform:scale(0.98);}
+
+  .search-bar{
+    display:flex; gap:8px; margin-bottom:12px;
+  }
+  .search-bar input{flex:1;}
+
+  .med-card{
+    background:var(--card); border-radius:14px; border:1px solid var(--line);
+    box-shadow:var(--shadow); margin-bottom:12px; overflow:hidden;
+  }
+  .med-card-head{
+    padding:12px 14px; display:flex; justify-content:space-between; align-items:center;
+    cursor:pointer;
+  }
+  .med-card-head .name{font-size:15px; font-weight:700; color:var(--ink);}
+  .med-card-head .patient{font-size:11px; color:var(--ink-soft); margin-top:2px;}
+  .remain-badge{
+    font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px;
+    color:#fff; white-space:nowrap;
+  }
+  .remain-ok{background:#16a34a;}
+  .remain-low{background:#ea580c;}
+  .remain-zero{background:#9ca3af;}
+  .med-card-body{
+    padding:0 14px 14px; display:none; border-top:1px solid var(--line);
+  }
+  .med-card.open .med-card-body{display:block;}
+  .med-card.open .chevron{transform:rotate(180deg);}
+  .chevron{transition:transform 0.2s; color:var(--ink-soft); font-size:12px;}
+  .info-row{
+    display:flex; justify-content:space-between; font-size:13px; padding:6px 0;
+    border-bottom:1px dashed var(--line);
+  }
+  .info-row .k{color:var(--ink-soft);}
+  .info-row .v{font-weight:600; text-align:right; max-width:60%;}
+  .update-row{
+    display:flex; gap:8px; align-items:center; margin-top:12px;
+  }
+  .update-row input{flex:1;}
+  .qty-btn{
+    width:38px; height:38px; border-radius:9px; border:1px solid var(--line);
+    background:#fffaf0; font-size:18px; font-weight:700; color:var(--accent-dark);
+    font-family:inherit;
+  }
+  .update-actions{display:flex; gap:8px; margin-top:12px;}
+  .update-actions button{
+    flex:1; padding:10px; border-radius:9px; border:none; font-weight:700; font-size:13px;
+    font-family:inherit;
+  }
+  .btn-update{background:var(--accent); color:#fff;}
+  .btn-delete{background:#fdecec; color:var(--danger); border:1px solid #f5c6c6 !important;}
+
+  .empty-state{
+    text-align:center; color:var(--ink-soft); padding:40px 20px; font-size:14px;
+  }
+  .toast{
+    position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+    background:var(--ink); color:#fff; padding:10px 20px; border-radius:20px;
+    font-size:13px; opacity:0; pointer-events:none; transition:opacity 0.25s;
+    z-index:50; box-shadow:0 4px 14px rgba(0,0,0,0.25);
+  }
+  .toast.show{opacity:1;}
+  .sync-status{
+    font-size:10px; text-align:center; padding:4px; color:var(--ink-soft);
+  }
+  .filter-chip-row{display:flex; gap:6px; overflow-x:auto; margin-bottom:12px; padding-bottom:2px;}
+  .filter-chip{
+    white-space:nowrap; padding:6px 12px; border-radius:16px; border:1px solid var(--line);
+    background:#fff; font-size:12px; color:var(--ink-soft); font-family:inherit;
+  }
+  .filter-chip.active{background:var(--accent); color:#fff; border-color:var(--accent);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <h1>💊 おくすり手帳帖</h1>
+  <div class="sub">処方薬の記録・在庫管理</div>
+</header>
+
+<div class="tabbar">
+  <button id="tabNewBtn" class="active" onclick="switchTab('new')">📝 新規登録</button>
+  <button id="tabManageBtn" onclick="switchTab('manage')">📋 管理</button>
+</div>
+
+<main>
+  <!-- 新規登録画面 -->
+  <section id="tabNew">
+    <div class="card">
+      <h2>🏥 処方情報</h2>
+      <label>処方日</label>
+      <input type="date" id="presDate">
+      <label>病院名</label>
+      <input type="text" id="hospital" placeholder="例：〇〇クリニック">
+      <label>処方された人の名前</label>
+      <input type="text" id="patientName" placeholder="例：理">
+      <label>症状</label>
+      <textarea id="symptom" placeholder="例：発熱、のどの痛み"></textarea>
+    </div>
+
+    <div class="card">
+      <h2>💊 薬の情報</h2>
+      <div id="medList"></div>
+      <button type="button" class="add-med-btn" onclick="addMedBlock()">＋ 薬を追加</button>
+    </div>
+
+    <button class="save-btn" onclick="savePrescription()">この内容で登録する</button>
+  </section>
+
+  <!-- 管理画面 -->
+  <section id="tabManage" style="display:none;">
+    <div class="search-bar">
+      <input type="text" id="searchBox" placeholder="薬名・患者名・病院名で検索" oninput="renderManage()">
+    </div>
+    <div class="filter-chip-row" id="patientFilterRow"></div>
+    <div id="manageList"></div>
+  </section>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+<script>
+/* ==========================================================
+   Firebase設定
+   ※ ご自身のFirebaseプロジェクトの設定値に書き換えてください
+   Firebaseコンソール → プロジェクトの設定 → マイアプリ → SDK設定
+   ========================================================== */
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
+  projectId: "YOUR_PROJECT",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const presRef = db.ref("prescriptions");
+
+let prescriptions = {}; // { id: {date, hospital, patientName, symptom, medicines:[{name,effect,quantity,remaining,storage}]} }
+let medCounter = 0;
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 1800);
+}
+
+/* ---------- タブ切替 ---------- */
+function switchTab(tab){
+  document.getElementById('tabNew').style.display = tab==='new' ? 'block':'none';
+  document.getElementById('tabManage').style.display = tab==='manage' ? 'block':'none';
+  document.getElementById('tabNewBtn').classList.toggle('active', tab==='new');
+  document.getElementById('tabManageBtn').classList.toggle('active', tab==='manage');
+  if(tab==='manage') renderManage();
+}
+
+/* ---------- 薬入力ブロック ---------- */
+function addMedBlock(prefill){
+  medCounter++;
+  const id = medCounter;
+  const wrap = document.createElement('div');
+  wrap.className = 'med-block';
+  wrap.id = 'medBlock'+id;
+  wrap.innerHTML = `
+    <div class="med-num">薬 ${document.querySelectorAll('.med-block').length + 1}</div>
+    <label>薬名</label>
+    <input type="text" class="m-name" placeholder="例：ロキソニン錠60mg">
+    <label>薬の効能</label>
+    <input type="text" class="m-effect" placeholder="例：解熱鎮痛">
+    <div class="med-grid">
+      <div>
+        <label>数量</label>
+        <input type="number" class="m-quantity" min="0" placeholder="例：21">
+      </div>
+      <div>
+        <label>残数</label>
+        <input type="number" class="m-remaining" min="0" placeholder="例：21">
+      </div>
+    </div>
+    <label>保管場所</label>
+    <input type="text" class="m-storage" placeholder="例：キッチン戸棚">
+    <button type="button" class="remove-med" onclick="removeMedBlock(${id})">この薬を削除</button>
+  `;
+  document.getElementById('medList').appendChild(wrap);
+  renumberMedBlocks();
+}
+function removeMedBlock(id){
+  const el = document.getElementById('medBlock'+id);
+  if(el) el.remove();
+  renumberMedBlocks();
+}
+function renumberMedBlocks(){
+  const blocks = document.querySelectorAll('.med-block');
+  blocks.forEach((b,i)=>{
+    b.querySelector('.med-num').textContent = '薬 ' + (i+1);
+  });
+}
+
+/* ---------- 登録保存 ---------- */
+function savePrescription(){
+  const date = document.getElementById('presDate').value;
+  const hospital = document.getElementById('hospital').value.trim();
+  const patientName = document.getElementById('patientName').value.trim();
+  const symptom = document.getElementById('symptom').value.trim();
+
+  if(!date || !hospital || !patientName){
+    showToast('処方日・病院名・お名前は必須です');
+    return;
+  }
+
+  const medBlocks = document.querySelectorAll('.med-block');
+  if(medBlocks.length === 0){
+    showToast('薬を1つ以上追加してください');
+    return;
+  }
+
+  const medicines = [];
+  for(const b of medBlocks){
+    const name = b.querySelector('.m-name').value.trim();
+    const effect = b.querySelector('.m-effect').value.trim();
+    const quantity = parseFloat(b.querySelector('.m-quantity').value) || 0;
+    const remainingRaw = b.querySelector('.m-remaining').value;
+    const remaining = remainingRaw === '' ? quantity : parseFloat(remainingRaw);
+    const storage = b.querySelector('.m-storage').value.trim();
+    if(!name){
+      showToast('薬名が未入力の項目があります');
+      return;
+    }
+    medicines.push({name, effect, quantity, remaining, storage});
+  }
+
+  const newRef = presRef.push();
+  newRef.set({
+    date, hospital, patientName, symptom, medicines,
+    createdAt: Date.now()
+  }).then(()=>{
+    showToast('登録しました');
+    resetForm();
+  }).catch(err=>{
+    showToast('保存エラー: ' + err.message);
+  });
+}
+
+function resetForm(){
+  document.getElementById('presDate').value = '';
+  document.getElementById('hospital').value = '';
+  document.getElementById('patientName').value = '';
+  document.getElementById('symptom').value = '';
+  document.getElementById('medList').innerHTML = '';
+  medCounter = 0;
+  addMedBlock();
+}
+
+/* ---------- Firebase同期 ---------- */
+presRef.on('value', snap=>{
+  prescriptions = snap.val() || {};
+  if(document.getElementById('tabManage').style.display !== 'none'){
+    renderManage();
+  }
+});
+
+/* ---------- 管理画面 ---------- */
+let activePatientFilter = '';
+
+function flattenMedicines(){
+  const list = [];
+  Object.entries(prescriptions).forEach(([presId, p])=>{
+    (p.medicines||[]).forEach((m, idx)=>{
+      list.push({
+        presId, medIdx: idx,
+        date: p.date, hospital: p.hospital, patientName: p.patientName, symptom: p.symptom,
+        name: m.name, effect: m.effect, quantity: m.quantity, remaining: m.remaining, storage: m.storage
+      });
+    });
+  });
+  list.sort((a,b)=> (b.date||'').localeCompare(a.date||''));
+  return list;
+}
+
+function renderPatientFilters(all){
+  const names = [...new Set(all.map(m=>m.patientName).filter(Boolean))];
+  const row = document.getElementById('patientFilterRow');
+  if(names.length <= 1){ row.innerHTML=''; return; }
+  row.innerHTML = `<button class="filter-chip ${activePatientFilter===''?'active':''}" onclick="setPatientFilter('')">全員</button>` +
+    names.map(n=>`<button class="filter-chip ${activePatientFilter===n?'active':''}" onclick="setPatientFilter('${n.replace(/'/g,"\\'")}')">${n}</button>`).join('');
+}
+function setPatientFilter(name){
+  activePatientFilter = name;
+  renderManage();
+}
+
+function renderManage(){
+  const all = flattenMedicines();
+  renderPatientFilters(all);
+
+  const keyword = (document.getElementById('searchBox').value || '').trim().toLowerCase();
+  let filtered = all.filter(m=>{
+    if(activePatientFilter && m.patientName !== activePatientFilter) return false;
+    if(!keyword) return true;
+    return [m.name, m.patientName, m.hospital, m.effect, m.symptom].join(' ').toLowerCase().includes(keyword);
+  });
+
+  const container = document.getElementById('manageList');
+  if(filtered.length === 0){
+    container.innerHTML = '<div class="empty-state">該当する薬がありません</div>';
+    return;
+  }
+
+  container.innerHTML = filtered.map(m=>{
+    const uid = `${m.presId}_${m.medIdx}`;
+    const qty = m.quantity || 0;
+    const rem = m.remaining ?? 0;
+    let badgeClass = 'remain-ok';
+    if(rem <= 0) badgeClass = 'remain-zero';
+    else if(qty > 0 && rem / qty <= 0.3) badgeClass = 'remain-low';
+
+    return `
+    <div class="med-card" id="card_${uid}">
+      <div class="med-card-head" onclick="toggleCard('${uid}')">
+        <div>
+          <div class="name">${escapeHtml(m.name)}</div>
+          <div class="patient">${escapeHtml(m.patientName||'')}・${escapeHtml(m.hospital||'')}・${escapeHtml(m.date||'')}</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span class="remain-badge ${badgeClass}">残 ${rem}</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="med-card-body">
+        <div class="info-row"><span class="k">処方日</span><span class="v">${escapeHtml(m.date||'-')}</span></div>
+        <div class="info-row"><span class="k">病院名</span><span class="v">${escapeHtml(m.hospital||'-')}</span></div>
+        <div class="info-row"><span class="k">処方された人</span><span class="v">${escapeHtml(m.patientName||'-')}</span></div>
+        <div class="info-row"><span class="k">症状</span><span class="v">${escapeHtml(m.symptom||'-')}</span></div>
+        <div class="info-row"><span class="k">薬の効能</span><span class="v">${escapeHtml(m.effect||'-')}</span></div>
+        <div class="info-row"><span class="k">処方数量</span><span class="v">${qty}</span></div>
+        <div class="info-row"><span class="k">保管場所</span><span class="v" id="storageView_${uid}">${escapeHtml(m.storage||'-')}</span></div>
+
+        <label style="margin-top:12px;">残数を更新</label>
+        <div class="update-row">
+          <button class="qty-btn" onclick="stepRemaining('${uid}', -1)">−</button>
+          <input type="number" id="remInput_${uid}" value="${rem}">
+          <button class="qty-btn" onclick="stepRemaining('${uid}', 1)">＋</button>
+        </div>
+        <label>保管場所を更新</label>
+        <input type="text" id="storageInput_${uid}" value="${escapeAttr(m.storage||'')}">
+
+        <div class="update-actions">
+          <button class="btn-update" onclick="updateMedicine('${m.presId}', ${m.medIdx}, '${uid}')">保存する</button>
+          <button class="btn-delete" onclick="deleteMedicine('${m.presId}', ${m.medIdx})">この薬を削除</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleCard(uid){
+  document.getElementById('card_'+uid).classList.toggle('open');
+}
+
+function stepRemaining(uid, delta){
+  const input = document.getElementById('remInput_'+uid);
+  let v = parseFloat(input.value) || 0;
+  v = Math.max(0, v + delta);
+  input.value = v;
+}
+
+function updateMedicine(presId, medIdx, uid){
+  const newRemaining = parseFloat(document.getElementById('remInput_'+uid).value) || 0;
+  const newStorage = document.getElementById('storageInput_'+uid).value.trim();
+  const medRef = presRef.child(presId).child('medicines').child(medIdx);
+  medRef.update({ remaining: newRemaining, storage: newStorage }).then(()=>{
+    showToast('更新しました');
+  }).catch(err=>{
+    showToast('更新エラー: ' + err.message);
+  });
+}
+
+function deleteMedicine(presId, medIdx){
+  if(!confirm('この薬の記録を削除しますか？')) return;
+  const p = prescriptions[presId];
+  if(!p || !p.medicines) return;
+  const newMeds = p.medicines.filter((_, i)=> i !== medIdx);
+  if(newMeds.length === 0){
+    presRef.child(presId).remove().then(()=> showToast('削除しました'));
+  } else {
+    presRef.child(presId).child('medicines').set(newMeds).then(()=> showToast('削除しました'));
+  }
+}
+
+function escapeHtml(str){
+  return String(str||'').replace(/[&<>"']/g, s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+}
+function escapeAttr(str){
+  return String(str||'').replace(/"/g,'&quot;');
+}
+
+/* ---------- 初期化 ---------- */
+window.addEventListener('DOMContentLoaded', ()=>{
+  const today = new Date();
+  document.getElementById('presDate').value = today.toISOString().slice(0,10);
+  addMedBlock();
+});
+</script>
+
+</body>
+</html>
