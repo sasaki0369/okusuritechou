@@ -240,8 +240,12 @@
       <div style="font-size:12px; color:var(--ink-soft); margin-bottom:10px;">
         写真から病院名・患者名・薬名などを読み取ってフォームに自動入力します。読み取り結果は必ず内容を確認してから登録してください。
       </div>
-      <input type="file" id="ocrFileInput" accept="image/*" capture="environment" style="display:none;" onchange="handleOcrFile(event)">
-      <button type="button" class="add-med-btn" onclick="document.getElementById('ocrFileInput').click()" id="ocrTriggerBtn">📷 処方箋を撮影 / 画像を選択</button>
+      <input type="file" id="ocrFileInputCamera" accept="image/*" capture="environment" style="display:none;" onchange="handleOcrFile(event)">
+      <input type="file" id="ocrFileInputLibrary" accept="image/*" style="display:none;" onchange="handleOcrFile(event)">
+      <div style="display:flex; gap:8px;">
+        <button type="button" class="add-med-btn" style="margin-top:0;" onclick="document.getElementById('ocrFileInputCamera').click()" id="ocrTriggerBtnCamera">📷 撮影する</button>
+        <button type="button" class="add-med-btn" style="margin-top:0;" onclick="document.getElementById('ocrFileInputLibrary').click()" id="ocrTriggerBtnLibrary">🖼️ 写真を選択</button>
+      </div>
       <div id="ocrStatus" style="font-size:12px; color:var(--accent-dark); margin-top:8px; display:none;"></div>
     </div>
 
@@ -372,11 +376,12 @@ function handleOcrFile(event){
   }
 
   const statusEl = document.getElementById('ocrStatus');
-  const btnEl = document.getElementById('ocrTriggerBtn');
+  const btnCam = document.getElementById('ocrTriggerBtnCamera');
+  const btnLib = document.getElementById('ocrTriggerBtnLibrary');
   statusEl.style.display = 'block';
   statusEl.textContent = '📖 読み取り中です。しばらくお待ちください...';
-  btnEl.disabled = true;
-  btnEl.style.opacity = '0.6';
+  btnCam.disabled = true; btnCam.style.opacity = '0.6';
+  btnLib.disabled = true; btnLib.style.opacity = '0.6';
 
   const reader = new FileReader();
   reader.onload = async ()=>{
@@ -390,14 +395,14 @@ function handleOcrFile(event){
     } catch(err){
       statusEl.textContent = '⚠️ 読み取りに失敗しました：' + err.message;
     } finally {
-      btnEl.disabled = false;
-      btnEl.style.opacity = '1';
+      btnCam.disabled = false; btnCam.style.opacity = '1';
+      btnLib.disabled = false; btnLib.style.opacity = '1';
     }
   };
   reader.onerror = ()=>{
     statusEl.textContent = '⚠️ 画像の読み込みに失敗しました';
-    btnEl.disabled = false;
-    btnEl.style.opacity = '1';
+    btnCam.disabled = false; btnCam.style.opacity = '1';
+    btnLib.disabled = false; btnLib.style.opacity = '1';
   };
   reader.readAsDataURL(file);
 }
