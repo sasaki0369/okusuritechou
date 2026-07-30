@@ -209,11 +209,39 @@
   </div>
 </header>
 
+<!-- グループ設定モーダル（初回起動 or グループ変更時） -->
+<div id="groupSetupModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:70; align-items:center; justify-content:center; padding:20px;">
+  <div class="card" style="width:100%; max-width:400px; margin:0;">
+    <h2>👪 グループの設定</h2>
+    <div style="font-size:12px; color:var(--ink-soft); margin-bottom:10px; line-height:1.6;">
+      家族やご自身用に新しくグループを作るか、すでにあるグループコードを入力して参加してください。同じコードの人同士だけがデータを共有します。
+    </div>
+    <button type="button" class="add-med-btn" onclick="createNewGroup()">🆕 新しいグループを作成する</button>
+
+    <label style="margin-top:16px;">既存のグループコードを入力</label>
+    <input type="text" id="joinGroupInput" placeholder="例：AB3XQ9" style="text-transform:uppercase;">
+    <div class="update-actions">
+      <button class="btn-update" onclick="joinExistingGroup()">このコードで参加する</button>
+      <button class="btn-delete" id="groupModalCloseBtn" style="display:none;" onclick="closeGroupSetupModal()">閉じる</button>
+    </div>
+  </div>
+</div>
+
 <!-- 設定モーダル -->
 <div id="settingsModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:60; align-items:center; justify-content:center; padding:20px;">
   <div class="card" style="width:100%; max-width:400px; margin:0;">
     <h2>⚙️ 設定</h2>
-    <label>Anthropic APIキー（写真読み取り機能に使用）</label>
+
+    <label>現在のグループコード</label>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <input type="text" id="groupCodeDisplay" readonly style="font-weight:700; letter-spacing:2px; background:var(--paper-dark);">
+      <button class="qty-btn" style="width:auto; padding:0 12px;" onclick="openGroupSettings()">変更</button>
+    </div>
+    <div style="font-size:11px; color:var(--ink-soft); margin-top:4px;">
+      このコードを共有した相手だけが同じデータを見られます。他の人に知られないようご注意ください。
+    </div>
+
+    <label style="margin-top:16px;">Anthropic APIキー（写真読み取り機能に使用）</label>
     <input type="text" id="apiKeyInput" placeholder="sk-ant-...">
     <div style="font-size:11px; color:var(--ink-soft); margin-top:6px; line-height:1.5;">
       ・処方箋の写真からの自動入力機能で使用します<br>
@@ -306,17 +334,89 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const auth = firebase.auth();
-const presRef = db.ref("prescriptions");
+
+let presRef = null; // グループ確定後に設定される
+let currentGroupId = null;
 
 let prescriptions = {}; // { id: {date, hospital, patientName, symptom, medicines:[{name,effect,quantity,remaining,storage}]} }
 let medCounter = 0;
 let authReady = false;
 
+/* ---------- グループ管理 ---------- */
+const GROUP_ID_STORAGE = 'okusuriTechouGroupId';
+
+function generateGroupCode(){
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // 紛らわしい文字(0,O,1,I)を除外
+  let code = '';
+  for(let i=0;i<6;i++) code += chars[Math.floor(Math.random()*chars.length)];
+  return code;
+}
+
+function initGroup(){
+  const saved = localStorage.getItem(GROUP_ID_STORAGE);
+  if(saved){
+    setGroup(saved);
+  } else {
+    showGroupSetupModal(false);
+  }
+}
+
+function setGroup(groupId){
+  if(presRef){
+    presRef.off(); // 前のグループのリスナーを解除
+  }
+  currentGroupId = groupId;
+  localStorage.setItem(GROUP_ID_STORAGE, groupId);
+  presRef = db.ref('groups/' + groupId + '/prescriptions');
+  syncStarted = false; // グループ切替時は再購読できるようにする
+  prescriptions = {};
+  if(authReady) startDataSync();
+  updateGroupBadge();
+}
+
+function updateGroupBadge(){
+  const el = document.getElementById('groupCodeDisplay');
+  if(el) el.value = currentGroupId || '-';
+}
+
+function showGroupSetupModal(allowClose){
+  document.getElementById('groupModalCloseBtn').style.display = allowClose ? 'block' : 'none';
+  document.getElementById('groupSetupModal').style.display = 'flex';
+}
+function closeGroupSetupModal(){
+  document.getElementById('groupSetupModal').style.display = 'none';
+}
+
+function createNewGroup(){
+  const code = generateGroupCode();
+  setGroup(code);
+  closeGroupSetupModal();
+  showToast('新しいグループを作成しました：' + code);
+}
+
+function joinExistingGroup(){
+  const input = document.getElementById('joinGroupInput').value.trim().toUpperCase();
+  if(!input){
+    showToast('グループコードを入力してください');
+    return;
+  }
+  setGroup(input);
+  closeGroupSetupModal();
+  showToast('グループ「' + input + '」に参加しました');
+}
+
+function openGroupSettings(){
+  document.getElementById('joinGroupInput').value = '';
+  closeSettings();
+  showGroupSetupModal(true);
+}
+
 /* ---------- 匿名認証 ---------- */
 auth.onAuthStateChanged(user=>{
   if(user){
     authReady = true;
-    startDataSync();
+    initGroup();
+    if(currentGroupId) startDataSync();
   } else {
     authReady = false;
     auth.signInAnonymously().catch(err=>{
@@ -336,6 +436,7 @@ function showToast(msg){
 const API_KEY_STORAGE = 'okusuriTechouAnthropicKey';
 function openSettings(){
   document.getElementById('apiKeyInput').value = localStorage.getItem(API_KEY_STORAGE) || '';
+  document.getElementById('groupCodeDisplay').value = currentGroupId || '-';
   document.getElementById('settingsModal').style.display = 'flex';
 }
 function closeSettings(){
